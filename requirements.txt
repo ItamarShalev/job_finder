@@ -1,2 +1,7 @@
 # For pdf reader
 PyPDF2
+
+# For linters and tests - CI CD useage
+pylint
+pycodestyle
+pytest
