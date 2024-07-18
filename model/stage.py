@@ -9,3 +9,11 @@ class Stage:
     summery: str
     score: int
     type: str
+
+    def to_json(self):
+        return {
+            "reviewer": self.reviewer.to_json(),
+            "summery": self.summery,
+            "score": self.score,
+            "type": self.type,
+        }
