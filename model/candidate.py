@@ -11,6 +11,7 @@ class Candidate:
     name: str
     email: str
     phone: str
+    city: str
     summery: str
     bazz_words: List[str]
     stages: Dict[Position, List[Stage]]
