@@ -16,3 +16,8 @@ python-dotenv
 # AWS package
 boto3
 botocore
+
+# For linkdin api
+requests_mock
+requests
+bs4
