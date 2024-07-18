@@ -5,3 +5,10 @@ PyPDF2
 pylint
 pycodestyle
 pytest
+
+# For serverAPI
+fastapi
+uvicorn
+
+# Getting api and other env variables
+python-dotenv
