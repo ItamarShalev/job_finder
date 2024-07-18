@@ -1,0 +1,282 @@
+[
+  {
+    "id": "1",
+    "title": "Software Engineer",
+    "description": "Develop and maintain software applications.",
+    "location": "New York, NY",
+    "company": "Tech Solutions",
+    "stats": {
+      "totalApplicants": 3000,
+      "aiPassed": 500,
+      "hrPassed": 200,
+      "teamLeadPassed": 50,
+      "completed": 20
+    }
+  },
+  {
+    "id": "2",
+    "title": "Data Scientist",
+    "description": "Analyze and interpret complex data sets.",
+    "location": "San Francisco, CA",
+    "company": "Tech Solutions",
+    "stats": {
+      "totalApplicants": 2500,
+      "aiPassed": 600,
+      "hrPassed": 250,
+      "teamLeadPassed": 70,
+      "completed": 30
+    }
+  },
+  {
+    "id": "3",
+    "title": "Project Manager",
+    "description": "Manage project timelines, budgets, and deliverables.",
+    "location": "Chicago, IL",
+    "company": "Innovate LLC",
+    "stats": {
+      "totalApplicants": 1800,
+      "aiPassed": 400,
+      "hrPassed": 150,
+      "teamLeadPassed": 60,
+      "completed": 25
+    }
+  },
+  {
+    "id": "4",
+    "title": "UX Designer",
+    "description": "Design user interfaces and improve user experience.",
+    "location": "Austin, TX",
+    "company": "Creative Minds",
+    "stats": {
+      "totalApplicants": 2200,
+      "aiPassed": 450,
+      "hrPassed": 180,
+      "teamLeadPassed": 70,
+      "completed": 40
+    }
+  },
+  {
+    "id": "5",
+    "title": "DevOps Engineer",
+    "description": "Implement and maintain CI/CD pipelines.",
+    "location": "Seattle, WA",
+    "company": "Cloud Solutions",
+    "stats": {
+      "totalApplicants": 1600,
+      "aiPassed": 350,
+      "hrPassed": 140,
+      "teamLeadPassed": 50,
+      "completed": 30
+    }
+  },
+  {
+    "id": "6",
+    "title": "Marketing Specialist",
+    "description": "Develop and execute marketing campaigns.",
+    "location": "Boston, MA",
+    "company": "MarketPros",
+    "stats": {
+      "totalApplicants": 2000,
+      "aiPassed": 500,
+      "hrPassed": 210,
+      "teamLeadPassed": 80,
+      "completed": 35
+    }
+  },
+  {
+    "id": "7",
+    "title": "HR Coordinator",
+    "description": "Coordinate HR activities and manage employee records.",
+    "location": "Miami, FL",
+    "company": "PeopleFirst",
+    "stats": {
+      "totalApplicants": 1700,
+      "aiPassed": 450,
+      "hrPassed": 190,
+      "teamLeadPassed": 70,
+      "completed": 40
+    }
+  },
+  {
+    "id": "8",
+    "title": "Network Engineer",
+    "description": "Design, implement, and maintain network infrastructure.",
+    "location": "Denver, CO",
+    "company": "NetSecure",
+    "stats": {
+      "totalApplicants": 1900,
+      "aiPassed": 480,
+      "hrPassed": 200,
+      "teamLeadPassed": 65,
+      "completed": 28
+    }
+  },
+  {
+    "id": "9",
+    "title": "Product Manager",
+    "description": "Oversee product development and launch.",
+    "location": "San Diego, CA",
+    "company": "Productive Inc.",
+    "stats": {
+      "totalApplicants": 2300,
+      "aiPassed": 520,
+      "hrPassed": 220,
+      "teamLeadPassed": 75,
+      "completed": 40
+    }
+  },
+  {
+    "id": "10",
+    "title": "Business Analyst",
+    "description": "Analyze business processes and provide solutions.",
+    "location": "Atlanta, GA",
+    "company": "BizAnalytics",
+    "stats": {
+      "totalApplicants": 2100,
+      "aiPassed": 490,
+      "hrPassed": 210,
+      "teamLeadPassed": 80,
+      "completed": 50
+    }
+  },
+  {
+    "id": "11",
+    "title": "Systems Administrator",
+    "description": "Manage and maintain IT systems and infrastructure.",
+    "location": "Dallas, TX",
+    "company": "ITSecure",
+    "stats": {
+      "totalApplicants": 1800,
+      "aiPassed": 400,
+      "hrPassed": 160,
+      "teamLeadPassed": 55,
+      "completed": 25
+    }
+  },
+  {
+    "id": "12",
+    "title": "Full Stack Developer",
+    "description": "Develop front-end and back-end web applications.",
+    "location": "Los Angeles, CA",
+    "company": "WebWorks",
+    "stats": {
+      "totalApplicants": 2400,
+      "aiPassed": 600,
+      "hrPassed": 230,
+      "teamLeadPassed": 90,
+      "completed": 45
+    }
+  },
+  {
+    "id": "13",
+    "title": "Technical Support Specialist",
+    "description": "Provide technical support and troubleshooting.",
+    "location": "Orlando, FL",
+    "company": "TechSupport Inc.",
+    "stats": {
+      "totalApplicants": 1600,
+      "aiPassed": 350,
+      "hrPassed": 140,
+      "teamLeadPassed": 50,
+      "completed": 20
+    }
+  },
+  {
+    "id": "14",
+    "title": "Security Analyst",
+    "description": "Monitor and respond to security incidents.",
+    "location": "Phoenix, AZ",
+    "company": "SecureTech",
+    "stats": {
+      "totalApplicants": 2100,
+      "aiPassed": 500,
+      "hrPassed": 200,
+      "teamLeadPassed": 70,
+      "completed": 35
+    }
+  },
+  {
+    "id": "15",
+    "title": "Database Administrator",
+    "description": "Manage and maintain database systems.",
+    "location": "Houston, TX",
+    "company": "DataMasters",
+    "stats": {
+      "totalApplicants": 1900,
+      "aiPassed": 450,
+      "hrPassed": 180,
+      "teamLeadPassed": 60,
+      "completed": 30
+    }
+  },
+  {
+    "id": "16",
+    "title": "Sales Manager",
+    "description": "Lead the sales team and manage sales activities.",
+    "location": "Philadelphia, PA",
+    "company": "SalesForce",
+    "stats": {
+      "totalApplicants": 2200,
+      "aiPassed": 520,
+      "hrPassed": 210,
+      "teamLeadPassed": 80,
+      "completed": 40
+    }
+  },
+  {
+    "id": "17",
+    "title": "Graphic Designer",
+    "description": "Create visual concepts and designs.",
+    "location": "Portland, OR",
+    "company": "DesignPro",
+    "stats": {
+      "totalApplicants": 1800,
+      "aiPassed": 420,
+      "hrPassed": 170,
+      "teamLeadPassed": 60,
+      "completed": 35
+    }
+  },
+  {
+    "id": "18",
+    "title": "Mobile Developer",
+    "description": "Develop mobile applications for iOS and Android.",
+    "location": "San Jose, CA",
+    "company": "AppDev",
+    "stats": {
+      "totalApplicants": 2300,
+      "aiPassed": 550,
+      "hrPassed": 220,
+      "teamLeadPassed": 85,
+      "completed": 45
+    }
+  },
+  {
+    "id": "19",
+    "title": "Content Writer",
+    "description": "Write and edit content for various platforms.",
+    "location": "Charlotte, NC",
+    "company": "ContentCreators",
+    "stats": {
+      "totalApplicants": 2000,
+      "aiPassed": 480,
+      "hrPassed": 200,
+      "teamLeadPassed": 70,
+      "completed": 30
+    }
+  },
+  {
+    "id": "20",
+    "title": "IT Support Technician",
+    "description": "Provide IT support and maintenance.",
+    "location": "Las Vegas, NV",
+    "company": "SupportTech",
+    "stats": {
+      "totalApplicants": 1500,
+      "aiPassed": 300,
+      "hrPassed": 120,
+      "teamLeadPassed": 50,
+      "completed": 25
+    }
+  }
+]
