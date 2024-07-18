@@ -1,8 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Optional, List
 
-from position import LinkdinUrl
+from model.position import LinkdinUrl
 
 
 class InterviewerType(Enum):
@@ -18,9 +18,9 @@ class Interviewer:
     password: str
     name: str
     company: str
-    phone: Optional[str]
-    email: Optional[str]
-    positions: List[LinkdinUrl]
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    positions: List[LinkdinUrl] = field(default_factory=list)
 
     def __eq__(self, other):
         return self.user_name == other.user_name

@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from pathlib import PurePosixPath
 from typing import Optional, List, Dict
 
-from position import Position
-from stage import Stage
+from model.position import Position
+from model.stage import Stage
 
 
 @dataclass

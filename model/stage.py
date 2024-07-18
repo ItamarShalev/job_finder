@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from interviewer import Interviewer
+from model.interviewer import Interviewer
 
 
 @dataclass
