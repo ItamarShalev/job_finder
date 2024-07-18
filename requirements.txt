@@ -12,3 +12,7 @@ uvicorn
 
 # Getting api and other env variables
 python-dotenv
+
+# AWS package
+boto3
+botocore
