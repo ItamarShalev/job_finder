@@ -84,14 +84,12 @@ async def create_candidate(
     print(text)
     positions = [PurePosixPath(position) for position in positions_selected.split(",")]
     print(positions)
-    assert "github" in positions[0].name
     return {"success": True, "message": "Candidate created successfully"}
 
 @app.post("/api/get_positions_by_user_name/")
 async def get_positions_by_user_name(
         user_name: str = Form(...)
 ):
-    assert user_name == "user_name"
     interview = Interviewer(type=InterviewerType.AI, user_name="AI", password="password", name="name", company="company", phone="phone", email="email", positions=[PurePosixPath("position")])
     position = Position(linkdin_url=PurePosixPath("linkdin_url"), name=user_name, open_by="open_by", company="company", location="location", description="description")
     return {"result": {"user": interview, "positions": [position.to_json() for _ in range(3)]}}
