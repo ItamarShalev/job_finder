@@ -94,6 +94,15 @@ async def get_positions_by_user_name(
     position = Position(linkdin_url=PurePosixPath("linkdin_url"), name=user_name, open_by="open_by", company="company", location="location", description="description")
     return {"result": {"user": interview, "positions": [position.to_json() for _ in range(3)]}}
 
+@app.post("/api/get_position_by_linkdin_url/")
+async def get_positions_by_user_name(
+        linkdin_url: str = Form(...)
+):
+    interview = Interviewer(type=InterviewerType.AI, user_name="AI", password="password", name="name", company="company", phone="phone", email="email", positions=[PurePosixPath("position")])
+    position = Position(linkdin_url=PurePosixPath(linkdin_url), name="NAME", open_by="open_by", company="company", location="location", description="description")
+    return {"result": position.to_json()}
+
+
 @app.get("/api/get_positions/")
 async def get_positions():
     position = Position(linkdin_url=PurePosixPath("linkdin_url"), name="name", open_by="open_by", company="company", location="location", description="description")
