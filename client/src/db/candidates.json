@@ -1,0 +1,54 @@
+[
+    {
+      "id": "1",
+      "name": "Alice Johnson",
+      "stage": "AI Passed",
+      "responsible": "John Doe",
+      "phone": "123-456-7890",
+      "email": "alice@example.com",
+      "linkedin": "https://www.linkedin.com/in/alicejohnson/",
+      "jobId": "1",
+      "steps": [
+        {"name": "Application Submitted", "status": "Completed"},
+        {"name": "AI Passed", "status": "Completed"},
+        {"name": "HR Passed", "status": "Completed"},
+        {"name": "Team Lead Passed", "status": "In Progress"},
+        {"name": "Final Interview", "status": "Pending"}
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Bob Smith",
+      "stage": "HR Passed",
+      "responsible": "Jane Doe",
+      "phone": "987-654-3210",
+      "email": "bob@example.com",
+      "linkedin": "https://www.linkedin.com/in/bobsmith/",
+      "jobId": "1",
+      "steps": [
+        {"name": "Application Submitted", "status": "Completed"},
+        {"name": "AI Passed", "status": "Completed"},
+        {"name": "HR Passed", "status": "In Progress"},
+        {"name": "Team Lead Passed", "status": "Pending"},
+        {"name": "Final Interview", "status": "Pending"}
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Charlie Brown",
+      "stage": "Team Lead Passed",
+      "responsible": "John Doe",
+      "phone": "555-555-5555",
+      "email": "charlie@example.com",
+      "linkedin": "https://www.linkedin.com/in/charliebrown/",
+      "jobId": "2",
+      "steps": [
+        {"name": "Application Submitted", "status": "Completed"},
+        {"name": "AI Passed", "status": "Completed"},
+        {"name": "HR Passed", "status": "Completed"},
+        {"name": "Team Lead Passed", "status": "Completed"},
+        {"name": "Final Interview", "status": "In Progress"}
+      ]
+    }
+  ]
+  

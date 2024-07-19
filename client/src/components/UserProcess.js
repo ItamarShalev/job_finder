@@ -5,7 +5,7 @@ import AIRecommendations from './AIRecommendations';
 import HRInsights from './HRInsights';
 import TeamLeadComments from './TeamLeadComments';
 
-const UserProcess = ({ userInfo, activeStep, onStepChange }) => {
+const UserProcess = ({ userInfo, activeStep, onStepChange, stages }) => {
   const processSteps = [
     'AI Recommendations',
     'HR Insights',
@@ -35,7 +35,7 @@ const UserProcess = ({ userInfo, activeStep, onStepChange }) => {
         {activeStep === 1 && <HRInsights hrInfo={userInfo.hrInfo} />}
         {activeStep === 2 && <TeamLeadComments teamLeadInfo={userInfo.teamLeadInfo} />}
       </Box>
-      <UserTechnicalInfo userInfo={userInfo} />
+      
     </Container>
   );
 };

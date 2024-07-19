@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import FilterButtons from '../components/FilterButtons';
 import JobCard from '../components/JobCard';
 import axios from 'axios';
-import jobsData from '../db/jobs.json'; // נתיב הקובץ לפי המיקום שלו בפרויקט
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -28,10 +27,18 @@ const MainPage = () => {
   const [selectedJobs, setSelectedJobs] = useState([]);
 
   useEffect(() => {
-    if (jobsData && jobsData.length > 0) {
-      setJobs(jobsData);
-      setFilteredJobs(jobsData); // הצגת כל המשרות כברירת מחדל בעת טעינת הקומפוננטה
-    }
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/get_positions/');
+        console.log('Fetched jobs:', response.data.result); // בדיקת המידע שמתקבל מהשרת
+        setJobs(response.data.result);
+        setFilteredJobs(response.data.result); // הצגת כל המשרות כברירת מחדל בעת טעינת הקומפוננטה
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+
+    fetchJobs();
   }, []);
 
   const filterJobs = useCallback(() => {
@@ -75,11 +82,12 @@ const MainPage = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', uploadedFile);
+    formData.append('pdf_file', uploadedFile);
+    formData.append('positions_selected', JSON.stringify(selectedJobs.map(job => job.id)));
 
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8000/upload', formData, {
+      const response = await axios.post('http://localhost:8000/api/create_candidate/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -119,10 +127,7 @@ const MainPage = () => {
   const filters = {
     Location: [...new Set(jobs.map((job) => job.location))],
     Company: [...new Set(jobs.map((job) => job.company))],
-    Role: [...new Set(jobs.map((job) => job.title))],
-    // Assuming "Field" and "Type" are also part of job data.
-    Field: [...new Set(jobs.map((job) => job.field))],
-    Type: [...new Set(jobs.map((job) => job.type))]
+    Role: [...new Set(jobs.map((job) => job.name))], // assuming 'name' is the job title
   };
 
   return (
@@ -161,13 +166,13 @@ const MainPage = () => {
             <Button
               variant="contained"
               component="label"
-              startIcon={<AttachFileIcon />} // הוספת האייקון
+              startIcon={<AttachFileIcon />}
             >
               Add File
               <input
                 type="file"
                 hidden
-                accept=".pdf, .doc, .docx"
+                accept=".pdf"
                 onChange={handleFileUpload}
               />
             </Button>
