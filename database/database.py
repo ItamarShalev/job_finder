@@ -83,9 +83,9 @@ create_tables_sql = [
 
 
 class Department:
-    def __init__(self, file_name = None):
+    def __init__(self, file_name):
 
-        self.db_file = file_name or db_file
+        self.db_file = file_name
         self.database(self.db_file)
 
     def database(self, db_file: str):

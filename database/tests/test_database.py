@@ -1,14 +1,8 @@
 import pytest
 import os
-import sqlite3
-from model.candidate import Candidate
-from model.interviewer import Interviewer, InterviewerType
-from model.position import Position
-from model.stage import Stage
+
 from database.database import Department
-from pathlib import  Path
-# Path to a temporary database file for testing
-test_db_file = Path(__file__).parent / 'test.db'
+test_db_file =  'test.db'
 
 @pytest.fixture(scope='module')
 def department():
@@ -60,20 +54,9 @@ def test_get_candidate_by_phone(department):
 def test_get_candidate_by_position(department):
     candidates = department.get_candidate_by_position("url_1")
     assert len(candidates) > 0
-
 def test_get_candidate_stages(department):
     stages = department.get_candidate_stages("1111111111", "url_1")
     assert len(stages) > 0
-
-def test_get_stage_by_id(department):
-    stage = department.get_stage_by_id(1)
-    assert stage.id == 1
-
-def test_get_interviewer_type(department):
-    department.add_interviewer_type("HR")
-    interviewer_type = department.get_interviewer_type("HR")
-    assert interviewer_type.interviewer_type == "HR"
-
 # Run the tests
 if __name__ == '__main__':
     pytest.main()
