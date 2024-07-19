@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Box, TextField, Button, Typography, Alert } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import SignUpDialog from '../components/SignUpDialog';
+import axios from 'axios';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [openSignUp, setOpenSignUp] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // בדיקה פשוטה לדוגמה
-    if (email === 'test@example.com' && password === 'password') {
-      setError('');
-      // נוודא שהמשתמש ניגש לדף הנכון לאחר הלוגין
-      console.log('Logged in successfully');
-    } else {
-      setError('Invalid email or password');
+    try {
+      const formData = new FormData();
+      formData.append('user_name', userName);
+
+      const response = await axios.post('http://localhost:8000/api/get_positions_by_user_name/', formData);
+      if (response.status === 200) {
+        setError('');
+        navigate('/managers');
+      } else {
+        setError('Failed to login');
+      }
+    } catch (error) {
+      setError('Failed to login');
+      console.error('Login error:', error);
     }
   };
 
@@ -29,9 +39,16 @@ const LoginPage = () => {
     setOpenSignUp(false);
   };
 
+  useEffect(() => {
+    if (userName && password) {
+      setError('');
+    }
+  }, [userName, password]);
+
+  const isLoginEnabled = userName !== '' && password !== '';
+
   return (
     <Container maxWidth="xs">
-    
       <Box
         display="flex"
         flexDirection="column"
@@ -54,10 +71,9 @@ const LoginPage = () => {
             margin="normal"
             required
             fullWidth
-            label="Email Address"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            label="UserName"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -75,6 +91,7 @@ const LoginPage = () => {
             variant="contained"
             color="primary"
             style={{ marginTop: 16 }}
+            disabled={!isLoginEnabled}
           >
             Login
           </Button>
@@ -82,8 +99,7 @@ const LoginPage = () => {
         <Button
           fullWidth
           variant="text"
-          sx={{ color: 'black', marginTop: 16, textTransform: 'none' }}
-          style={{ marginTop: 16, textTransform: 'none' }}
+          sx={{ color: 'black', marginTop: 3, textTransform: 'none' }}
           onClick={handleSignUpOpen}
         >
           Sign Up

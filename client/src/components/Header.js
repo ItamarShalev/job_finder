@@ -8,7 +8,7 @@ const Header = () => {
     <AppBar position="static" sx={{ width: '100%' }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          JobFinder
+          SmartTech
         </Typography>
         <Box display="flex" alignItems="center">
           <IconButton color="inherit" component={Link} to="/login">

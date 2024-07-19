@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import ManagerJobCard from './ManagerJobCard';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const ManagerDashboard = ({ managerInfo, jobs }) => {
   const [selectedJob, setSelectedJob] = useState(null);
@@ -11,6 +12,7 @@ const ManagerDashboard = ({ managerInfo, jobs }) => {
 
   return (
     <Box p={3} textAlign="center">
+      <AccountCircleIcon style={{ fontSize: 100, color: '#3f51b5' }} />
       <Typography variant="h4" gutterBottom>
         Welcome, {managerInfo.name}
       </Typography>
