@@ -1,9 +1,13 @@
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from tempfile import NamedTemporaryFile
 
 from fastapi import FastAPI, File, UploadFile, Form
 import uvicorn
 
+from model.interviewer import Interviewer, InterviewerType
+from model.stage import Stage
+from model.candidate import Candidate
+from model.position import Position
 from logic.pdf_reader import PdfReader
 
 app = FastAPI()
@@ -28,39 +32,60 @@ async def upload_file(
 async def get_stages_by_candidate(
     candidate_phone_number: str = Form(...)
 ):
-    return {[]}
+    interview1 = Interviewer(type=InterviewerType.AI, user_name="AI", password="password", name="name", company="company", phone="phone", email="email", positions=[PurePosixPath("position")])
+    interview2 = Interviewer(type=InterviewerType.HR, user_name="Human Resource", password="password", name="name", company="company", phone="phone", email="email", positions=[PurePosixPath("position")])
+    stage1 = Stage(reviewer=interview1, summery="Best worker ever !", score=8, type="First Filter")
+    stage2 = Stage(reviewer=interview2, summery="Best worker ever !", score=4, type="First Filter")
+    return {"stages": [stage1.to_json(), stage2.to_json()]}
 
 @app.post("/api/get_candidates_by_position/")
 async def get_candidates_by_position(
     linkdin_url: str = Form(...),
     user_name: str = Form(...)
 ):
-    return {[]}
+    candidate = Candidate(name="name", email="email", phone="phone", city="city", summery="summery",
+                          bazz_words=["python", "java"], stages={}, resume_url=PurePosixPath("resume"),
+                          linkdin_url=PurePosixPath("linkdin_url"), github_url=PurePosixPath("github_url"))
+    return {"result": [candidate.to_json() for _ in range(6)]}
 
 @app.post("/api/add_linkdin_company/")
-async def add_company_linkdin(
+async def add_linkdin_company(
     company_linkdin_url: str = Form(...),
     user_name: str = Form(...)
 ):
-    return {[]}
+    position = Position(linkdin_url=PurePosixPath("linkdin_url"), name=user_name, open_by="open_by", company="company", location="location", description="description")
+    return {"result": [position.to_json() for _ in range(6)]}
 
 @app.post("/api/create_candidate/")
 async def create_candidate(
     pdf_file: UploadFile = File(...),
     positions_selected: str = Form(...)
 ):
+    content = await pdf_file.read()
+    with NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(content)
+        file_path = Path(temp_file.name)
 
-    return {[]}
+    text = PdfReader(file_path).convert_to_text()
+    print(text)
+    positions = [PurePosixPath(position) for position in positions_selected.split(",")]
+    print(positions)
+    assert "github" in positions[0].name
+    return {"success": True, "message": "Candidate created successfully"}
 
 @app.post("/api/get_positions_by_user_name/")
 async def get_positions_by_user_name(
         user_name: str = Form(...)
 ):
-    return {[]}
+    assert user_name == "user_name"
+    interview = Interviewer(type=InterviewerType.AI, user_name="AI", password="password", name="name", company="company", phone="phone", email="email", positions=[PurePosixPath("position")])
+    position = Position(linkdin_url=PurePosixPath("linkdin_url"), name=user_name, open_by="open_by", company="company", location="location", description="description")
+    return {"result": {"user": interview, "positions": [position.to_json() for _ in range(3)]}}
 
 @app.get("/api/get_positions/")
 async def get_positions():
-    return {[]}
+    position = Position(linkdin_url=PurePosixPath("linkdin_url"), name="name", open_by="open_by", company="company", location="location", description="description")
+    return {"result": [position.to_json() for _ in range(6)]}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
