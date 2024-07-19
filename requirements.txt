@@ -21,3 +21,9 @@ botocore
 requests_mock
 requests
 bs4
+
+# For server side use fastapi
+fastapi
+uvicorn
+
+firebase-admin
