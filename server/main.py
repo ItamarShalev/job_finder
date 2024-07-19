@@ -3,7 +3,8 @@ from tempfile import NamedTemporaryFile
 
 from fastapi import FastAPI, File, UploadFile, Form
 import uvicorn
-
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from model.interviewer import Interviewer, InterviewerType
 from model.stage import Stage
 from model.candidate import Candidate
