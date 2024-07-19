@@ -5,8 +5,8 @@ from model.candidate import Candidate
 from model.interviewer import Interviewer, InterviewerType
 from model.position import Position
 from model.stage import Stage
-
-db_file = 'departments.db'
+from  pathlib import Path
+db_file = Path(__file__).parent / 'departments.db'
 
 create_tables_sql = [
     """
@@ -83,9 +83,10 @@ create_tables_sql = [
 
 
 class Department:
-    def __init__(self):
-        self.db_file = db_file
-        self.database(db_file)
+    def __init__(self, file_name = None):
+
+        self.db_file = file_name or db_file
+        self.database(self.db_file)
 
     def database(self, db_file: str):
         # Check if the database file exists
@@ -129,7 +130,7 @@ class Department:
     def add_position(self, linkdin_url: str, name: str, open_by: str, company: str, location: str, description: str):
         """Add a new position to the Position table."""
         sql = """
-        INSERT INTO Position (linkdin_url, name, open_by, company, location, description)
+        INSERT OR IGNORE INTO Position (linkdin_url, name, open_by, company, location, description)
         VALUES (?, ?, ?, ?, ?, ?);
         """
         try:
@@ -147,7 +148,7 @@ class Department:
                         type: str):
         """Add a new interviewer to the Interviewer table."""
         sql = """
-        INSERT INTO Interviewer (user_name, password, name, company, phone, email, type)
+        INSERT OR IGNORE INTO Interviewer (user_name, password, name, company, phone, email, type)
         VALUES (?, ?, ?, ?, ?, ?, ?);
         """
         try:
@@ -160,43 +161,10 @@ class Department:
             raise
         finally:
             conn.close()
-
-    def add_interviewer_position(self, interviewer_user_name, position_linkdin_url):
-        try:
-            query = """
-                   INSERT INTO InterviewerPositions (interviewer_user_name, position_linkdin_url)
-                   VALUES (?, ?)
-               """
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(query, (interviewer_user_name, position_linkdin_url))
-            conn.commit()
-            print("Interviewer position added successfully.")
-        except sqlite3.Error as err:
-            print(f"Error: {err}")
-            conn.close()
-
-    def add_interviewer_type(self, type: str):
-        """Add a new interviewer type to the InterviewerType table."""
-        sql = """
-        INSERT INTO Interviewer (type)
-        VALUES (?);
-        """
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (type,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error adding interviewer: {e}")
-            raise
-        finally:
-            conn.close()
-
     def add_stage(self, reviewer: str, summery: str, score: int, type: str):
         """Add a new stage to the Stage table."""
         sql = """
-        INSERT INTO Stage (reviewer, summery, score, type)
+        INSERT OR IGNORE INTO Stage (reviewer, summery, score, type)
         VALUES (?, ?, ?, ?);
         """
         try:
@@ -209,12 +177,11 @@ class Department:
             raise
         finally:
             conn.close()
-
     def add_candidate(self, name: str, email: str, phone: str, city: str, summery: str, bazz_words: str,
                       resume_url: str, linkdin_url: str, github_url: str):
         """Add a new candidate to the Candidate table."""
         sql = """
-        INSERT INTO Candidate (name, email, phone, city, summery, bazz_words, resume_url, linkdin_url, github_url)
+        INSERT OR IGNORE INTO Candidate (name, email, phone, city, summery, bazz_words, resume_url, linkdin_url, github_url)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """
         try:
@@ -227,126 +194,6 @@ class Department:
             raise
         finally:
             conn.close()
-
-    def add_candidate_stage(self, candidate_phone: str, position_linkdin_url: str, stage_id: int):
-        """Add a new candidate stage to the CandidateStages table."""
-        sql = """
-        INSERT INTO CandidateStages (candidate_phone, position_linkdin_url, stage_id)
-        VALUES (?, ?, ?);
-        """
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (candidate_phone, position_linkdin_url, stage_id))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error adding candidate stage: {e}")
-            raise
-        finally:
-            conn.close()
-
-    ########################################################################################################################
-
-    def delete_position(self, linkdin_url: str):
-        """Delete a position from the Position table."""
-        sql = "DELETE FROM Position WHERE linkdin_url = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (linkdin_url,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting position: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def delete_interviewer(self, user_name: str):
-        """Delete an interviewer from the Interviewer table."""
-        sql = "DELETE FROM Interviewer WHERE user_name = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (user_name,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting interviewer: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def delete_interviewer_position(self, interviewer_user_name, position_linkdin_url):
-        """Delete an interviewer from the Interviewer table."""
-        sql = """DELETE FROM InterviewerPositions WHERE interviewer_user_name = ? AND position_linkdin_url = ?"""
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (interviewer_user_name, position_linkdin_url,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting interviewer: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def delete_stage(self, stage_id: int):
-        """Delete a stage from the Stage table."""
-        sql = "DELETE FROM Stage WHERE id = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (stage_id,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting stage: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def delete_interviewer_type(self, type: str):
-        """DELETE FROM interviewerType from the InterviewerType table."""
-        sql = "DELETE FROM InterviewerType WHERE type = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (type,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting interviewer type: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def delete_candidate(self, phone: str):
-        """Delete a candidate from the Candidate table."""
-        sql = "DELETE FROM Candidate WHERE phone = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (phone,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting candidate: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def delete_candidate_stage(self, candidate_phone: str, position_linkdin_url: str, stage_id: int):
-        """Delete a candidate stage from the CandidateStages table."""
-        sql = "DELETE FROM CandidateStages WHERE candidate_phone = ? AND position_linkdin_url = ? AND stage_id = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (candidate_phone, position_linkdin_url, stage_id))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error deleting candidate stage: {e}")
-            raise
-        finally:
-            conn.close()
-
-    ########################################################################################################################
-
     def get_all_positions(self) -> List[Position]:
         """Get all positions from the Position table."""
         sql = "SELECT * FROM Position;"
@@ -362,102 +209,6 @@ class Department:
             raise
         finally:
             conn.close()
-
-    def get_all_interviewers(self) -> List[Interviewer]:
-        """Get all interviewers from the Interviewer table."""
-        sql = "SELECT * FROM Interviewer;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            return [Interviewer(user_name=row[0], password=row[1], name=row[2], company=row[3], phone=row[4],
-                                email=row[5], type=row[6]) for row in rows]
-        except sqlite3.Error as e:
-            print(f"Error retrieving interviewers: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_all_interviewer_type(self, type)-> List[InterviewerType]:
-        """Get all interviewers from the Interviewer table."""
-        sql = """SELECT * FROM InterviewerType;"""
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (type,))
-            rows = cursor.fetchall()
-            return [InterviewerType(type=row[0]) for row in rows]
-        except sqlite3.Error as e:
-            print(f"Error retrieving interviewers: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_all_stages(self) -> List[Stage]:
-        """Get all stages from the Stage table."""
-        sql = "SELECT * FROM Stage;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            return [Stage(id=row[0], reviewer=row[1], summery=row[2], score=row[3], type=row[4]) for row in rows]
-        except sqlite3.Error as e:
-            print(f"Error retrieving stages: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_all_candidates(self) -> List [Candidate]:
-        """Get all candidates from the Candidate table."""
-        sql = "SELECT * FROM Candidate;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            return [Candidate(name=row[0], email=row[1], phone=row[2], city=row[3], summery=row[4], bazz_words=row[5],
-                              resume_url=row[6], linkdin_url=row[7], github_url=row[8]) for row in rows]
-        except sqlite3.Error as e:
-            print(f"Error retrieving candidates: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_all_candidate_stages(self) -> List[Tuple[Stage, Candidate, Position]]:
-        """Get all candidate stages from the CandidateStages table."""
-        sql = "SELECT * FROM CandidateStages;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            return [(self.get_stage_by_id(row[2]), self.get_candidate_by_phone(row[0]),
-                     self.get_position_by_linkedin_url(row[1])) for row in rows]
-        except sqlite3.Error as e:
-            print(f"Error retrieving candidate stages: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_all_interviewer_positions(self) -> List[(Position, Interviewer)]:
-        """Get all interviewer positions from the InterviewerPositions table."""
-        sql = "SELECT * FROM InterviewerPositions;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            return [(self.get_position_by_linkedin_url(row[1]), self.get_interviewer_by_user_name(row[0])) for row in rows]
-        except sqlite3.Error as e:
-            print(f"Error retrieving interviewer positions: {e}")
-            raise
-        finally:
-            conn.close()
-
-    ########################################################################################################################
-
     def get_position_by_linkedin_url(self, linkedin_url: str) -> Position:
         """Get a position record from the Position table by linkedin_url."""
         sql = "SELECT * FROM Position WHERE linkedin_url = ?;"
@@ -498,25 +249,6 @@ class Department:
         finally:
             conn.close()
 
-    def get_interviewer_positions(self, user_name: str) -> List[Position]:
-        """Get all positions for an interviewer from the InterviewerPositions table."""
-        sql = "SELECT * FROM InterviewerPositions WHERE interviewer_user_name = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (user_name,))
-            rows = cursor.fetchall()
-            positions = []
-            for row in rows:
-                position = self.get_position_by_linkedin_url(row[1])
-                positions.append(position)
-            return positions
-        except sqlite3.Error as e:
-            print(f"Error retrieving interviewer positions: {e}")
-            raise
-        finally:
-            conn.close()
-
     def get_candidate_by_phone(self, phone: str) -> Candidate:
         """Get a candidate record from the Candidate table by phone."""
         sql = "SELECT * FROM Candidate WHERE phone = ?;"
@@ -549,7 +281,7 @@ class Department:
             for row in rows:
                 stage = self.get_stage_by_id(row[2])
                 stages.append(stage)
-            return stages
+            return [self.get_candidate_by_phone(row[0]) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving candidate stages: {e}")
             raise
@@ -570,46 +302,6 @@ class Department:
             return stages
         except sqlite3.Error as e:
             print(f"Error retrieving candidate stages: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_stage_by_id(self, stage_id: int) -> Stage:
-        """Get a stage record from the Stage table by id."""
-        sql = "SELECT * FROM Stage WHERE id = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (stage_id,))
-            row = cursor.fetchone()
-            if row:
-                column_names = [column[0] for column in cursor.description]
-                data = dict(zip(column_names, row))
-                return Stage(**data)
-            else:
-                return None  # Return None if no record is found
-        except sqlite3.Error as e:
-            print(f"Error retrieving stage: {e}")
-            raise
-        finally:
-            conn.close()
-
-    def get_interviewer_type(self, type: str) -> InterviewerType:
-        """Get an interviewer type record from the InterviewerType table by type."""
-        sql = "SELECT * FROM InterviewerType WHERE type = ?;"
-        try:
-            conn = self.get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute(sql, (type,))
-            row = cursor.fetchone()
-            if row:
-                column_names = [column[0] for column in cursor.description]
-                data = dict(zip(column_names, row))
-                return InterviewerType(**data)
-            else:
-                return None  # Return None if no record is found
-        except sqlite3.Error as e:
-            print(f"Error retrieving interviewer type: {e}")
             raise
         finally:
             conn.close()
