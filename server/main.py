@@ -1,6 +1,7 @@
 from pathlib import Path, PurePosixPath
 from tempfile import NamedTemporaryFile
 
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile, Form
 import uvicorn
 import sys
@@ -13,6 +14,18 @@ from logic.pdf_reader import PdfReader
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/api/demo/")
 async def upload_file(
