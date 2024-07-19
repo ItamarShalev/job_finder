@@ -1,7 +1,6 @@
 import os
 import sqlite3
-from typing import List, Dict, Any
-from database_init import initialize_database, create_tables_sql
+from typing import List, Dict, Any, Tuple
 from model.candidate import Candidate
 from model.interviewer import Interviewer, InterviewerType
 from model.position import Position
@@ -9,17 +8,90 @@ from model.stage import Stage
 
 db_file = 'departments.db'
 
+create_tables_sql = [
+    """
+    CREATE TABLE IF NOT EXISTS Position (
+        linkdin_url VARCHAR(255) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        open_by VARCHAR(255) NOT NULL,
+        company VARCHAR(255) NOT NULL,
+        location VARCHAR(255),
+        description TEXT
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS InterviewerType (
+        type VARCHAR(2) PRIMARY KEY
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS Interviewer (
+        user_name VARCHAR(255) PRIMARY KEY,
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        company VARCHAR(255) NOT NULL,
+        phone VARCHAR(20),
+        email VARCHAR(255),
+        type VARCHAR(2),
+        FOREIGN KEY (type) REFERENCES InterviewerType(type)
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS InterviewerPositions (
+        interviewer_user_name VARCHAR(255),
+        position_linkdin_url VARCHAR(255),
+        PRIMARY KEY (interviewer_user_name, position_linkdin_url),
+        FOREIGN KEY (interviewer_user_name) REFERENCES Interviewer(user_name),
+        FOREIGN KEY (position_linkdin_url) REFERENCES Position(linkdin_url)
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS Stage (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        reviewer VARCHAR(255),
+        summery TEXT,
+        score INT,
+        type VARCHAR(255),
+        FOREIGN KEY (reviewer) REFERENCES Interviewer(user_name)
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS Candidate (
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(20) PRIMARY KEY,
+        city VARCHAR(255),
+        summery TEXT,
+        bazz_words TEXT,
+        resume_url VARCHAR(255),
+        linkdin_url VARCHAR(255),
+        github_url VARCHAR(255)
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS CandidateStages (
+        candidate_phone VARCHAR(20),
+        position_linkdin_url VARCHAR(255),
+        stage_id INT,
+        PRIMARY KEY (candidate_phone, position_linkdin_url, stage_id),
+        FOREIGN KEY (candidate_phone) REFERENCES Candidate(phone),
+        FOREIGN KEY (position_linkdin_url) REFERENCES Position(linkdin_url),
+        FOREIGN KEY (stage_id) REFERENCES Stage(id)
+    );
+    """
+]
+
 
 class Department:
     def __init__(self):
         self.db_file = db_file
         self.database(db_file)
 
-    def database(db_file: str):
+    def database(self, db_file: str):
         # Check if the database file exists
         if not os.path.exists(db_file):
             print(f"Database file '{db_file}' does not exist. Creating and initializing the database.")
-            initialize_database(db_file)
+            self.initialize_database(db_file)
         else:
             # Connect to the existing database
             conn = sqlite3.connect(db_file)
@@ -32,6 +104,19 @@ class Department:
             conn.close()
             print(f"Database file '{db_file}' exists. Checked and ensured all tables are present.")
         print("Database initialization complete.")
+
+    def initialize_database(self, db_file):
+        # Connect to the database (it will create the file if it doesn't exist)
+        conn = sqlite3.connect(db_file)
+        cursor = conn.cursor()
+
+        # Execute SQL commands to create tables
+        for sql in create_tables_sql:
+            cursor.execute(sql)
+
+        # Commit and close connection
+        conn.commit()
+        conn.close()
 
     def get_db_connection(self):
         """Get a connection to the database."""
@@ -160,7 +245,7 @@ class Department:
         finally:
             conn.close()
 
-########################################################################################################################
+    ########################################################################################################################
 
     def delete_position(self, linkdin_url: str):
         """Delete a position from the Position table."""
@@ -262,7 +347,7 @@ class Department:
 
     ########################################################################################################################
 
-    def get_all_positions(self) -> List[Dict[str, Any]]:
+    def get_all_positions(self) -> List[Position]:
         """Get all positions from the Position table."""
         sql = "SELECT * FROM Position;"
         try:
@@ -270,14 +355,15 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql)
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [Position(linkdin_url=row[0], name=row[1], open_by=row[2], company=row[3], location=row[4],
+                             description=row[5]) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving positions: {e}")
             raise
         finally:
             conn.close()
 
-    def get_all_interviewers(self) -> List[Dict[str, Any]]:
+    def get_all_interviewers(self) -> List[Interviewer]:
         """Get all interviewers from the Interviewer table."""
         sql = "SELECT * FROM Interviewer;"
         try:
@@ -285,14 +371,15 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql)
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [Interviewer(user_name=row[0], password=row[1], name=row[2], company=row[3], phone=row[4],
+                                email=row[5], type=row[6]) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving interviewers: {e}")
             raise
         finally:
             conn.close()
 
-    def get_all_interviewer_type(self, type):
+    def get_all_interviewer_type(self, type)-> List[InterviewerType]:
         """Get all interviewers from the Interviewer table."""
         sql = """SELECT * FROM InterviewerType;"""
         try:
@@ -300,14 +387,14 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql, (type,))
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [InterviewerType(type=row[0]) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving interviewers: {e}")
             raise
         finally:
             conn.close()
 
-    def get_all_stages(self) -> List[Dict[str, Any]]:
+    def get_all_stages(self) -> List[Stage]:
         """Get all stages from the Stage table."""
         sql = "SELECT * FROM Stage;"
         try:
@@ -315,14 +402,14 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql)
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [Stage(id=row[0], reviewer=row[1], summery=row[2], score=row[3], type=row[4]) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving stages: {e}")
             raise
         finally:
             conn.close()
 
-    def get_all_candidates(self) -> List[Dict[str, Any]]:
+    def get_all_candidates(self) -> List [Candidate]:
         """Get all candidates from the Candidate table."""
         sql = "SELECT * FROM Candidate;"
         try:
@@ -330,14 +417,15 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql)
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [Candidate(name=row[0], email=row[1], phone=row[2], city=row[3], summery=row[4], bazz_words=row[5],
+                              resume_url=row[6], linkdin_url=row[7], github_url=row[8]) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving candidates: {e}")
             raise
         finally:
             conn.close()
 
-    def get_all_candidate_stages(self) -> List[Dict[str, Any]]:
+    def get_all_candidate_stages(self) -> List[Tuple[Stage, Candidate, Position]]:
         """Get all candidate stages from the CandidateStages table."""
         sql = "SELECT * FROM CandidateStages;"
         try:
@@ -345,14 +433,15 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql)
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [(self.get_stage_by_id(row[2]), self.get_candidate_by_phone(row[0]),
+                     self.get_position_by_linkedin_url(row[1])) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving candidate stages: {e}")
             raise
         finally:
             conn.close()
 
-    def get_all_interviewer_positions(self) -> List[Dict[str, Any]]:
+    def get_all_interviewer_positions(self) -> List[(Position, Interviewer)]:
         """Get all interviewer positions from the InterviewerPositions table."""
         sql = "SELECT * FROM InterviewerPositions;"
         try:
@@ -360,14 +449,14 @@ class Department:
             cursor = conn.cursor()
             cursor.execute(sql)
             rows = cursor.fetchall()
-            return [dict(zip([column[0] for column in cursor.description], row)) for row in rows]
+            return [(self.get_position_by_linkedin_url(row[1]), self.get_interviewer_by_user_name(row[0])) for row in rows]
         except sqlite3.Error as e:
             print(f"Error retrieving interviewer positions: {e}")
             raise
         finally:
             conn.close()
 
-########################################################################################################################
+    ########################################################################################################################
 
     def get_position_by_linkedin_url(self, linkedin_url: str) -> Position:
         """Get a position record from the Position table by linkedin_url."""
@@ -448,6 +537,24 @@ class Department:
         finally:
             conn.close()
 
+    def get_candidate_by_position(self, linkedin_url: str) -> List[Candidate]:
+        """Get all stages for a candidate from the CandidateStages table."""
+        sql = "SELECT * FROM CandidateStages WHERE position_linkedin_url = ?;"
+        try:
+            conn = self.get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(sql, (linkedin_url))
+            rows = cursor.fetchall()
+            stages = []
+            for row in rows:
+                stage = self.get_stage_by_id(row[2])
+                stages.append(stage)
+            return stages
+        except sqlite3.Error as e:
+            print(f"Error retrieving candidate stages: {e}")
+            raise
+        finally:
+            conn.close()
     def get_candidate_stages(self, phone: str, linkedin_url: str) -> List[Stage]:
         """Get all stages for a candidate from the CandidateStages table."""
         sql = "SELECT * FROM CandidateStages WHERE candidate_phone = ? AND position_linkedin_url = ?;"
